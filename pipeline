@@ -1,2 +1,2 @@
 minimap2 -d ref.mmi GRCh38_latest_genomic.fna.gz                     # indexing
-minimap2 -ax map-ont GRCh38_latest_genomic.fna.gz rel_6.fastq.gz > aln.sam      # for Oxford Nanopore reads
+minimap2 -ax map-ont GRCh38_latest_genomic.fna.gz rel_6.fastq.gz > aln1.sam      # for Oxford Nanopore reads
