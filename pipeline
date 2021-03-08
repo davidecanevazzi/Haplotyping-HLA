@@ -1,2 +1,11 @@
 minimap2 -d ref.mmi GRCh38_latest_genomic.fna.gz                     # indexing
 minimap2 -ax map-ont GRCh38_latest_genomic.fna.gz rel_6.fastq.gz > aln1.sam      # for Oxford Nanopore reads
+
+
+samtools view -bS aln1.sam > aln1.bam
+samtools sort aln1.bam -o aln1.sorted.bam
+samtools index sample.sorted.bam
+
+samtools view aln1.sorted.bam "NT_167249.2:1,181,883-31,357,583" > HLA_A_B.bam
+
+samtools index HLA_A_B.bam #the file cannot be indexed
