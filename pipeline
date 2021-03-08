@@ -7,5 +7,10 @@ samtools sort aln1.bam -o aln1.sorted.bam
 samtools index sample.sorted.bam
 
 samtools view aln1.sorted.bam "NT_167249.2:1,181,883-31,357,583" > HLA_A_B.bam
+samtools view -b aln1.sorted.bam "NT_167249.2:1,181,883-31,357,583" > HLA_A_B1.bam
 
-samtools index HLA_A_B.bam #the file cannot be indexed
+samtools view -b aln1.sorted.bam "chr6:29,908,309-31,326,956" > HLA_A_B.bam
+samtools index HLA_A_B.bam 
+
+
+samtools view -b aln1.sorted.bam NC_000006.12:29942532-31353875 > HLA_A_B.bam
