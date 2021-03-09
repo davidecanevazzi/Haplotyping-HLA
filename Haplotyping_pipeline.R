@@ -4,17 +4,17 @@
 reference="GRCh38_latest_genomic.fna.gz"
 #system(paste0("cd ", reference))
 
-aln.sam="aln2.sam"
-aln.bam="aln2.bam"
-aln.sorted.bam="aln2.sorted.bam"
-HLA="HLA_A_B_ashke.bam"
-region="NC_000006.12:29942532-31353875"
+aln.sam="aln2.sam"   #name of the .sam file
+aln.bam="aln2.bam"   #name of the .bam file
+aln.sorted.bam="aln2.sorted.bam" #name of the sorted bam file"
+HLA="HLA_A_B_ashke.bam" #name of the file in the region of interest
+region="NC_000006.12:29942532-31353875" #region of interest
 
-system(paste0("samtools view -bS ",aln.sam, " > ",aln.bam))
-system(paste0("sort ",aln.bam," -o ", aln.sorted.bam))
-system(paste0("samtools index ",aln.sorted.bam))
-system(paste0("samtools view -b ", aln.sorted.bam, " ", region, " > ", HLA ))
-system(paste0("samtools index ",HLA))
+system(paste0("samtools view -bS ",aln.sam, " > ",aln.bam))  #convert .sam>.bam
+system(paste0("sort ",aln.bam," -o ", aln.sorted.bam)) #sort the .bam file
+system(paste0("samtools index ",aln.sorted.bam)) #index the sorted .bam file
+system(paste0("samtools view -b ", aln.sorted.bam, " ", region, " > ", HLA )) #selects only the region of interest
+system(paste0("samtools index ",HLA)) #index of the selected reads for IGV visualization
 
 
 #samtools view -bS aln1.sam > aln1.bam
@@ -29,3 +29,4 @@ system(paste0("samtools index ",HLA))
 
 
 #system(paste0("cp ", home_dir, "/", sample_name, ".fasta ", sample_dir, "/", sample_name, "_decont.fasta"))
+
