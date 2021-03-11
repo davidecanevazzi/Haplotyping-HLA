@@ -17,4 +17,7 @@ samtools view -b aln1.sorted.bam NC_000006.12:29942532-31353875 > HLA_A_B.bam
 
 
 
+samtools mpileup -g -f my.fastamy-sorted-1.bam my-sorted-2.bammy-sorted-n.bam> my-raw.bcf
+
+
 whatshap phase -o phased.vcf --reference=reference.fasta input.vcf nanopore.bam pacbio.cram
