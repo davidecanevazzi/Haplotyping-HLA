@@ -27,3 +27,7 @@ samtools mpileup -uDl pos.bed -f hg38.fa HG002_GRCh38_ONT-UL_GIAB_20200204.bam |
 
 
 whatshap phase -o phased.vcf --reference=reference.fasta input.vcf nanopore.bam pacbio.cram
+
+
+bcftools consensus --output consensus2.fasta --fasta-ref chr6.fa --iupac-codes --haplotype 2 HLA_HG002.vcf.gz
+
