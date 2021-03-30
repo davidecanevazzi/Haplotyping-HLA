@@ -31,5 +31,9 @@ whatshap phase -o phased.vcf --reference=reference.fasta input.vcf nanopore.bam 
 
 bcftools consensus --output consensus2.fasta --fasta-ref chr6.fa --iupac-codes --haplotype 2 HLA_HG002.vcf.gz
 
-samtools faidx consensus1.fasta chr6:29908309-31326956 > consensus1_HLA_fasta
+samtools faidx consensus1.fasta chr6:29908309-31326956 > consensus1_HLA.fasta
 
+
+
+#tabix -p vcf round_1_phased.vcf.gz for vcf index
+#29942532..29945870  HLA_A
