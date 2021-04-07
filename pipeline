@@ -37,3 +37,5 @@ samtools faidx consensus1.fasta chr6:29908309-31326956 > consensus1_HLA.fasta
 
 #tabix -p vcf round_1_phased.vcf.gz for vcf index
 #29942532..29945870  HLA_A
+#31353875..31357179 HLA_B
+#31268749..31272092 HLA_C
