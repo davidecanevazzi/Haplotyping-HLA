@@ -39,3 +39,14 @@ samtools faidx consensus1.fasta chr6:29908309-31326956 > consensus1_HLA.fasta
 #29942532..29945870  HLA_A
 #31353875..31357179 HLA_B
 #31268749..31272092 HLA_C
+
+#de novo assembly with canu
+
+bamtools split -in test.bam -tag HP
+samtools bam2fq input.bam | seqtk seq -A > output.fa
+
+
+canu useGrid=false -p hap2 -d outcanu1/ genomeSize=5k -nanopore-raw hap1.fa 
+
+
+
