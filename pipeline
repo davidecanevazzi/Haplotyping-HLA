@@ -49,4 +49,6 @@ samtools bam2fq input.bam | seqtk seq -A > output.fa
 canu useGrid=false -p hap2 -d outcanu1/ genomeSize=5k -nanopore-raw hap1.fa 
 
 
+canu correctedErrorRate=0.3 utgGraphDeviation=50 useGrid=false -p ashke_hap1 -d canu1/ genomeSize=5k -nanopore-raw ashke_HLA_1.fa 
+
 
