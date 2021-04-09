@@ -53,3 +53,11 @@ canu correctedErrorRate=0.3 utgGraphDeviation=50 useGrid=false -p ashke_hap1 -d 
 
 #https://univr-my.sharepoint.com/:p:/r/personal/davide_canevazzi_studenti_univr_it/_layouts/15/doc.aspx?sourcedoc=%7B449b53d2-7ac3-4e59-82bf-fb1685bd11dc%7D&action=edit 
 
+
+#de novo assembly with flye
+
+
+flye --nano-raw HLA_A_ashke_1.fa --out-dir flyeout1/
+
+
+
