@@ -1,0 +1,32 @@
+# ggplot2 examples
+install.packages('patchwork')
+library(ggplot2) 
+library(patchwork) # To display 2 charts together
+data= matrix(ncol = 2, nrow = 6 )
+#colnames(data)=c('pmd','pmd+flye')
+#rownames(data)=c('A1','A2','B1','B2','C1','C2')
+data[1,1]=99.5
+data[1,2]=99.7
+data[2,1]=97.9
+data[2,2]=99.3
+data[3,1]=99.6 
+data[3,2]=99.7
+data[4,1]=99.3
+data[4,2]=99.8
+data[5,1]=99.5
+data[5,2]=99.8
+data[6,1]=99.3
+data[6,2]=99.8
+
+data=as.data.frame(data)
+
+
+blast_res=data.frame(gene=c('A1','A2','B1','B2','C1','C2'),pmd=c(99.5,97.9,99.6,99.3,99.5,99.3),flye=c(99.7,99.3,99.7,99.8,99.8,99.8))
+blast_res
+
+p1 <- ggplot(blast_res, aes(x=gene, y=pmd)) + geom_point()
+
+p2 <- ggplot(blast_res, aes(x=gene, y=flye)) + geom_point()
+
+
+p2
