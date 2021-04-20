@@ -8,4 +8,4 @@ blast_res
 
 
 p1 <- ggplot(blast_res, aes(x=gene, y=identity)) + geom_point(aes(color=pip,size=5))
-p1+guides(size = FALSE)
+p1+guides(size = FALSE)+theme_linedraw()+ scale_y_continuous(breaks = scales::pretty_breaks(n = 10))
