@@ -78,7 +78,7 @@ if(pmd){
               -f ", REFERENCE," \
               -o ", OUTPUT_DIR, " \
               -p ", prefix, " \
-              -t ${THREADS} \
+              -t ${", THREADS, "} \
               --ont"))
 
 }
