@@ -40,6 +40,15 @@ samtools faidx consensus1.fasta chr6:29908309-31326956 > consensus1_HLA.fasta
 #31353875..31357179 HLA_B
 #31268749..31272092 HLA_C
 
+#HLA/MHC di classe II (DP, DM, DOA, DOB, DQ e DR) 
+# DP --> 33075990-33089696
+# DM--> 32948618-32953097
+# DOA --> 33004182-33009591
+# DOB --> 32812763-32817002
+# DQ --> 32659467-32666657
+# DR --> 32439887-32445046
+#
+
 #de novo assembly with canu
 
 bamtools split -in test.bam -tag HP
