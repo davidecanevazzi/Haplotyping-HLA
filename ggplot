@@ -10,7 +10,21 @@ blast_res
 p1 <- ggplot(blast_res, aes(x=gene, y=identity)) + geom_point(aes(color=pip,size=5))
 p1+guides(size = FALSE)+theme_linedraw()+ scale_y_continuous(breaks = scales::pretty_breaks(n = 10))
 
+# ggplot2 examples
+library(ggplot2) 
 
+
+# ggplot2 examples
+library(ggplot2) 
+
+blast_res=data.frame(gene=c('A1','A2','B1','B2','C1','C2','A1','A2','B1','B2','C1','C2'),
+                     identity=c(99.7,96.8,99.1,98.4,99.9,100,99.6,99.6,99.7,99.5,99.7,99.7),
+                        pip=c('pmd','pmd','pmd','pmd','pmd','pmd','flye','flye','flye','flye','flye','flye'))
+blast_res
+
+
+p1 <- ggplot(blast_res, aes(x=gene, y=identity)) + geom_point(aes(color=pip,size=5))
+p1+guides(size = FALSE)+theme_linedraw()+ scale_y_continuous(breaks = scales::pretty_breaks(n = 20))
 
 #plot of iterations
 
