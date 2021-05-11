@@ -60,18 +60,19 @@ if(samtools){
   system(paste0("rm ",SAM))
   system(paste0("samtools sort ",BAM," -o ", SORTED_BAM)) #sort the .bam file
   system(paste0("samtools index ",SORTED_BAM)) #index the sorted .bam file
+  prefix=paste0(prefix,'_')
+  HLA.bam=paste0(prefix,"HLA.bam")
+  system(paste0("samtools view -bS",SORTED_BAM," chr6:29940532-33099696 >",HLA.bam)) #select only the HLA genes
 }
 
 if(pmd){
   #from now pepper-margin-deepvariant
-  prefix=paste0(prefix,'_')
-  HLA.bam=paste0(prefix,"HLA.bam")
-  
+ 
   # The pull command creates pepper_deepvariant_r0.4.sif file locally
   
   #system(paste0("singularity pull docker://kishwars/pepper_deepvariant:r0.4"))
   
-  system(paste0("samtools view -bS",SORTED_BAM," chr6:29940532-33099696 >",HLA.bam)) #select only the HLA genes
+
   
   system(paste0("echo ---------------- Executing Pepper-Margin-Deepvariant [3/4] ---------------- "))
   
@@ -216,23 +217,23 @@ if(FALSE){
   #execute de-novo assembly with flye
   
   #class1
-    system(paste0("flye --nano-raw ", A1, " --out-dir ", oA1, "--threads 4 -m 1000"))
-    system(paste0("flye --nano-raw ", A2, " --out-dir ", oA2, "--threads 4 -m 1000"))
-    system(paste0("flye --nano-raw ", B1, " --out-dir ", oB1, "--threads 4 -m 1000"))
-    system(paste0("flye --nano-raw ", B2, " --out-dir ", oB2, "--threads 4 -m 1000"))
-    system(paste0("flye --nano-raw ", C1, " --out-dir ", oC1, "--threads 4 -m 1000"))
-    system(paste0("flye --nano-raw ", C2, " --out-dir ", oC2, "--threads 4 -m 1000"))
+    system(paste0("flye --nano-raw ", A1, " --out-dir ", oA1, "--threads 4 -m 1000 -i 2"))
+    system(paste0("flye --nano-raw ", A2, " --out-dir ", oA2, "--threads 4 -m 1000 -i 2"))
+    system(paste0("flye --nano-raw ", B1, " --out-dir ", oB1, "--threads 4 -m 1000 -i 2"))
+    system(paste0("flye --nano-raw ", B2, " --out-dir ", oB2, "--threads 4 -m 1000 -i 2"))
+    system(paste0("flye --nano-raw ", C1, " --out-dir ", oC1, "--threads 4 -m 1000 -i 2"))
+    system(paste0("flye --nano-raw ", C2, " --out-dir ", oC2, "--threads 4 -m 1000 -i 2"))
   #class2
-    system(paste0("flye --nano-raw ", DPA1_1, " --out-dir ", oDPA1_1, "--threads 4 -m 1000"))
-    system(paste0("flye --nano-raw ", DPA1_2, " --out-dir ", oDPA1_2, "--threads 4 -m 1000"))
-    system(paste0("flye --nano-raw ", DPB1_1, " --out-dir ", oDPB1_1, "--threads 4 -m 1000"))
-    system(paste0("flye --nano-raw ", DPB1_2, " --out-dir ", oDPB1_2, "--threads 4 -m 1000"))
-    system(paste0("flye --nano-raw ", DQA1_1, " --out-dir ", oDQA1_1, "--threads 4 -m 1000"))
-    system(paste0("flye --nano-raw ", DQA1_2, " --out-dir ", oDQA1_2, "--threads 4 -m 1000"))
-    system(paste0("flye --nano-raw ", DQB1_1, " --out-dir ", oDQB1_1, "--threads 4 -m 1000"))
-    system(paste0("flye --nano-raw ", DQB1_2, " --out-dir ", oDQB1_2, "--threads 4 -m 1000"))
-    system(paste0("flye --nano-raw ", DRB1_1, " --out-dir ", oDRB1_1, "--threads 4 -m 1000"))
-    system(paste0("flye --nano-raw ", DRB1_2, " --out-dir ", oDRB1_2, "--threads 4 -m 1000"))
+    system(paste0("flye --nano-raw ", DPA1_1, " --out-dir ", oDPA1_1, "--threads 4 -m 1000 -i 2"))
+    system(paste0("flye --nano-raw ", DPA1_2, " --out-dir ", oDPA1_2, "--threads 4 -m 1000 -i 2"))
+    system(paste0("flye --nano-raw ", DPB1_1, " --out-dir ", oDPB1_1, "--threads 4 -m 1000 -i 2"))
+    system(paste0("flye --nano-raw ", DPB1_2, " --out-dir ", oDPB1_2, "--threads 4 -m 1000 -i 2"))
+    system(paste0("flye --nano-raw ", DQA1_1, " --out-dir ", oDQA1_1, "--threads 4 -m 1000 -i 2"))
+    system(paste0("flye --nano-raw ", DQA1_2, " --out-dir ", oDQA1_2, "--threads 4 -m 1000 -i 2"))
+    system(paste0("flye --nano-raw ", DQB1_1, " --out-dir ", oDQB1_1, "--threads 4 -m 1000 -i 2"))
+    system(paste0("flye --nano-raw ", DQB1_2, " --out-dir ", oDQB1_2, "--threads 4 -m 1000 -i 2"))
+    system(paste0("flye --nano-raw ", DRB1_1, " --out-dir ", oDRB1_1, "--threads 4 -m 1000 -i 2"))
+    system(paste0("flye --nano-raw ", DRB1_2, " --out-dir ", oDRB1_2, "--threads 4 -m 1000 -i 2"))
 }
 
 system(paste0("echo ---------------- Finished ---------------- "))
