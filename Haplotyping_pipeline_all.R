@@ -16,6 +16,19 @@ flye=FALSE
 
 arg=commandArgs(trailingOnly = TRUE)
 
+
+if (arg[1] == "-h" | arg[1] == "--help") {
+  cat("", sep = "\n")
+  cat(paste0("Usage: Rscript Haplotyping_pipeline_all_HLA.R <fastq> <output_dir>"), sep = "\n")
+  cat(paste0("Note that Haplotyping_pipeline_all_HLA.R must be in the same directory of .fastq reads"), sep = "\n")
+  cat(paste0("<fastq>: file containing all fatsq reads"), sep = "\n")
+  cat(paste0("<output_dir>: directory for the output"), sep = "\n")
+ 
+  stop(simpleError(sprintf("\r%s\r", paste(rep(" ", getOption("width")-1L), collapse=" "))))
+}
+
+
+
 FASTQ=arg[1]
 
 prefix=sub("\\..*", "", FASTQ)
