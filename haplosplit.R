@@ -95,7 +95,7 @@ if(pmd){
   system(paste0("mkdir output/logs"))
   system(paste0("mkdir output/intermediate_files"))
   
-  system(paste0(" singularity exec /apps/PEPPER/0.4/pepper pepper_snp  call_variant -b ", HLA.bam ," -f  ", REFERENCE , " -t 4 -m ../../../../../scratch/production/DAT/apps/PEPPER_MARGIN_DEEPVARIANT/0.4/pepper_models/PEPPER_SNP_R941_ONT_V4.pkl -o output/pepper_snp/ -r chr6-s Sample -w 4 -bs 64 --ont 2>&1|tee output//logs/1_pepper_snp.log"))
+  system(paste0(" singularity exec /apps/PEPPER/0.4/pepper pepper_snp  call_variant -b ", HLA.bam ," -f  ", REFERENCE , " -t 4 -m ../../../../../scratch/production/DAT/apps/PEPPER_MARGIN_DEEPVARIANT/0.4/pepper_models/PEPPER_SNP_R941_ONT_V4.pkl -o output/pepper_snp/ -r chr6 -s Sample -w 4 -bs 64 --ont 2>&1|tee output//logs/1_pepper_snp.log"))
   system(paste0("mv output/pepper_snp/*.vcf output/PEPPER_SNP_OUPUT.vcf")) 
   system(paste0("bgzip output/PEPPER_SNP_OUPUT.vcf")) 
   system(paste0("tabix -p vcf output/PEPPER_SNP_OUPUT.vcf.gz")) 
