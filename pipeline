@@ -70,3 +70,16 @@ flye --nano-raw HLA_A_ashke_1.fa --out-dir flyeout1/
 
 
 
+-----------FOR SETA
+
+
+
+samtools view -bS SETA.sorted.bam chr6:31268749-31272092 > SETA_HLA_C.bam
+
+samtools index SETA_HLA_C.bam 
+longshot --bam SETA_HLA_C.bam --ref chr6.fa --out SETA_C.vcf
+
+
+
+
+
