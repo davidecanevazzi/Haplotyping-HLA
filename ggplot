@@ -38,7 +38,22 @@ blast_res=data.frame(gene=c('A1','A2','B1','B2','C1','C2','A1','A2','B1','B2','C
                                     '4','4','4','4','4','4'))
 blast_res
 
+DAUGHTER_KANSL
 
 p1 <- ggplot(blast_res, aes(x=gene, y=identity,group=iterations)) + geom_point(aes(color=iterations,size=5,shape=iterations))+
         geom_line(aes(color=iterations))
 p1+guides(size = FALSE)+theme_linedraw()+ scale_y_continuous(breaks = scales::pretty_breaks(n = 20))
+
+
+
+
+blast_res=data.frame(gene=c('A1','B1','C1','DPA1','DPB1','DQA1','DQB1'),
+                     identity=c(99.9,99.9,99.9,99.9,99.7,99.8,99.8))
+
+
+blast_res
+
+
+p1 <- ggplot(blast_res, aes(x=gene, y=identity)) + geom_point(aes(size=5))
+p1+guides(size = FALSE)+theme_linedraw()+ scale_y_continuous(breaks = scales::pretty_breaks(n = 3))
+
