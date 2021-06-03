@@ -11,12 +11,21 @@ paste0 <- function(..., collapse = NULL) {
 #system(paste0("module load PEPPER DEEPVARIANT MARGIN"))
 #system(paste0("module load bamtools"))
 #system(paste0("module load tabix"))
+
+#module purge; module load gcc/6.3.0 mkl/11.3.3 PYTHON/3.6.0 GLIBC/2.19 CONDA/4.5.11_PYTHON3;
+
+#source /home/devel/fcruz/bin/sourcefiles/initialize_conda.sh ;
+
+#source activate /home/devel/talioto/miniconda3/envs/flye-v2.8.3/ ;
+
+
+
 #----------------------------------------------------------------------------------
 
 
-minimap=FALSE
-samtools=FALSE
-pmd=FALSE
+minimap=TRUE
+samtools=TRUE
+pmd=TRUE
 flye=TRUE
 
 
@@ -62,7 +71,7 @@ if(minimap){
   
   system(paste0("echo ---------------- Mapping with minimap2 [1/4] ---------------- "))
   
-  system(paste0("minimap2 -a -z 600,200 -x map-ont ", REFERENCE , " ", FASTQ, " >",SAM)) 
+ # system(paste0("minimap2 -a -t 24 -z 600,200 -x map-ont ", REFERENCE , " ", FASTQ, " >",SAM)) 
   
   
   system(paste0("echo ---------------- Mapping completed ---------------- "))
@@ -72,13 +81,12 @@ if(minimap){
 if(samtools){
   system(paste0("echo ---------------- Samtools indexing and sorting [2/4] ---------------- "))
   #data conversion and indexinx with samtools
-  system(paste0("samtools view -bS ",SAM, " > ",BAM))  #convert .sam>.bam
-  system(paste0("rm ",SAM))
-  system(paste0("samtools sort ",BAM," -o ", SORTED_BAM)) #sort the .bam file
-  system(paste0("samtools index ",SORTED_BAM)) #index the sorted .bam file
+ #system(paste0("samtools view -bS ",SAM, " > ",BAM))  #convert .sam>.bam
+ # system(paste0("samtools sort -@12 ",BAM," -o ", SORTED_BAM)) #sort the .bam file
+ # system(paste0("samtools index ",SORTED_BAM)) #index the sorted .bam file
   prefix=paste0(prefix,'_')
   HLA.bam=paste0(prefix,"HLA.bam")
-  system(paste0("samtools view -bS",SORTED_BAM," chr6:29940532-33099696 > HLA.bam")) #select only the HLA genes
+ # system(paste0("samtools view -bS",SORTED_BAM," chr6:29940532-33099696 > HLA.bam")) #select only the HLA genes
   system(paste0("samtools index HLA.bam"))
   system(paste0("echo ---------------- indexing and sorting completed ---------------- "))
   
@@ -99,12 +107,12 @@ if(pmd){
   system(paste0("mkdir output/logs"))
   system(paste0("mkdir output/intermediate_files"))
   system(paste0("export HDF5_USE_FILE_LOCKING='FALSE'"))
-  system(paste0("singularity exec /apps/PEPPER/0.4/pepper pepper_snp  call_variant -b  HLA.bam -f  ", REFERENCE , " -t 4 -m ../../../../../scratch/production/DAT/apps/PEPPER_MARGIN_DEEPVARIANT/0.4/pepper_models/PEPPER_SNP_R941_ONT_V4.pkl -o output/pepper_snp/ -r chr6 -s Sample -w 4 -bs 64 --ont 2>&1|tee output//logs/1_pepper_snp.log"))
+  system(paste0("singularity exec /apps/PEPPER/0.4/pepper pepper_snp  call_variant -b  HLA.bam -f  ", REFERENCE , " -t 4 -m ../../../../../../../scratch/production/DAT/apps/PEPPER_MARGIN_DEEPVARIANT/0.4/pepper_models/PEPPER_SNP_R941_ONT_V4.pkl -o output/pepper_snp/ -r chr6 -s Sample -w 4 -bs 64 --ont 2>&1|tee output//logs/1_pepper_snp.log"))
   system(paste0("mv output/pepper_snp/*.vcf output/PEPPER_SNP_OUPUT.vcf")) 
   system(paste0("bgzip output/PEPPER_SNP_OUPUT.vcf")) 
   system(paste0("tabix -p vcf output/PEPPER_SNP_OUPUT.vcf.gz")) 
   system(paste0("rm -rf output/pepper_snp/"))
-  system(paste0("time margin phase HLA.bam ", REFERENCE,  " output/PEPPER_SNP_OUPUT.vcf.gz ../../../../../apps/MARGIN/2.2.2/params/misc/allParams.ont_haplotag.json -t 4 -r chr6 -V -o output/MARGIN_PHASED.PEPPER_SNP_MARGIN 2>&1 | tee output/logs/2_margin_haplotag.log"))
+  system(paste0("time margin phase HLA.bam ", REFERENCE,  " output/PEPPER_SNP_OUPUT.vcf.gz ../../../../../../apps/MARGIN/2.2.2/params/misc/allParams.ont_haplotag.json -t 4 -r chr6 -V -o output/MARGIN_PHASED.PEPPER_SNP_MARGIN 2>&1 | tee output/logs/2_margin_haplotag.log"))
   system(paste0("mv output/*.bam output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam"))
   system(paste("samtools index -@4 output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam"))
   
@@ -194,23 +202,28 @@ if(flye){
   #convert each haplotype from .bam to .fa
   
   #class1
-  system(paste0("samtools bam2fq ", flye_prefixA, ".TAG_HP_1.bam | seqtk seq -A > ", A1))
-  system(paste0("samtools bam2fq ", flye_prefixA, ".TAG_HP_2.bam | seqtk seq -A > ", A2))
-  system(paste0("samtools bam2fq ", flye_prefixB, ".TAG_HP_1.bam | seqtk seq -A > ", B1))
-  system(paste0("samtools bam2fq ", flye_prefixB, ".TAG_HP_2.bam | seqtk seq -A > ", B2))
-  system(paste0("samtools bam2fq ", flye_prefixC, ".TAG_HP_1.bam | seqtk seq -A > ", C1))
-  system(paste0("samtools bam2fq ", flye_prefixC, ".TAG_HP_2.bam | seqtk seq -A > ", C2))
-  #class2
-  system(paste0("samtools bam2fq ", flye_prefixDPA1, ".TAG_HP_1.bam | seqtk seq -A > ", DPA1_1))
-  system(paste0("samtools bam2fq ", flye_prefixDPA1, ".TAG_HP_2.bam | seqtk seq -A > ", DPA1_2))
-  system(paste0("samtools bam2fq ", flye_prefixDPB1, ".TAG_HP_1.bam | seqtk seq -A > ", DPB1_1))
-  system(paste0("samtools bam2fq ", flye_prefixDPB1, ".TAG_HP_2.bam | seqtk seq -A > ", DPB1_2))
-  system(paste0("samtools bam2fq ", flye_prefixDQA1, ".TAG_HP_1.bam | seqtk seq -A > ", DQA1_1))
-  system(paste0("samtools bam2fq ", flye_prefixDQA1, ".TAG_HP_2.bam | seqtk seq -A > ", DQA1_2))
-  system(paste0("samtools bam2fq ", flye_prefixDQB1, ".TAG_HP_1.bam | seqtk seq -A > ", DQB1_1))
-  system(paste0("samtools bam2fq ", flye_prefixDQB1, ".TAG_HP_2.bam | seqtk seq -A > ", DQB1_2))
-  system(paste0("samtools bam2fq ", flye_prefixDRB1, ".TAG_HP_1.bam | seqtk seq -A > ", DRB1_1))
-  system(paste0("samtools bam2fq ", flye_prefixDRB1, ".TAG_HP_2.bam | seqtk seq -A > ", DRB1_2))
+  
+  system(paste0("samtools fasta ", flye_prefixA, ".TAG_HP_1.bam -0 ", A1))
+  system(paste0("samtools fasta ", flye_prefixA, ".TAG_HP_2.bam -0 ", A2))
+  system(paste0("samtools fasta ", flye_prefixB, ".TAG_HP_1.bam -0 ", B1))
+  system(paste0("samtools fasta ", flye_prefixB, ".TAG_HP_2.bam -0 ", B2))
+  system(paste0("samtools fasta ", flye_prefixC, ".TAG_HP_1.bam -0 ", C1))
+  system(paste0("samtools fasta ", flye_prefixC, ".TAG_HP_2.bam -0 ", C2))
+  
+  
+  
+  system(paste0("samtools fasta ", flye_prefixDPA1, ".TAG_HP_1.bam -0 ", DPA1_1))
+  system(paste0("samtools fasta ", flye_prefixDPA1, ".TAG_HP_2.bam -0 ", DPA1_2))
+  system(paste0("samtools fasta ", flye_prefixDPB1, ".TAG_HP_1.bam -0 ", DPB1_1))
+  system(paste0("samtools fasta ", flye_prefixDPB1, ".TAG_HP_2.bam -0 ", DPB1_2))
+  system(paste0("samtools fasta ", flye_prefixDQA1, ".TAG_HP_1.bam -0 ", DQA1_1))
+  system(paste0("samtools fasta ", flye_prefixDQA1, ".TAG_HP_2.bam -0 ", DQA1_2))
+  system(paste0("samtools fasta ", flye_prefixDQB1, ".TAG_HP_1.bam -0 ", DQB1_1))
+  system(paste0("samtools fasta ", flye_prefixDQB1, ".TAG_HP_2.bam -0 ", DQB1_2))
+  system(paste0("samtools fasta ", flye_prefixDRB1, ".TAG_HP_1.bam -0 ", DRB1_1))
+  system(paste0("samtools fasta ", flye_prefixDRB1, ".TAG_HP_2.bam -0 ", DRB1_2))
+  
+  
 }
 
 if(TRUE){  
@@ -239,6 +252,9 @@ if(TRUE){
   #execute de-novo assembly with flye
   
   #class1
+
+  
+  
   system(paste0("flye --nano-raw ", A1, " --out-dir ", oA1, " --threads 4 -m 1000 -i 2"))
   system(paste0("flye --nano-raw ", A2, " --out-dir ", oA2, " --threads 4 -m 1000 -i 2"))
   system(paste0("flye --nano-raw ", B1, " --out-dir ", oB1, " --threads 4 -m 1000 -i 2"))
@@ -259,5 +275,3 @@ if(TRUE){
 }
 
 system(paste0("echo ---------------- Finished ---------------- "))
-
-
