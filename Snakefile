@@ -45,6 +45,9 @@ rule HLA_selection:
 
 #export HDF5_USE_FILE_LOCKING='FALSE'
 
+
+# HLA INDEXING???
+
 #run pepper margin
 
 rule pepper:
