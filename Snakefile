@@ -16,7 +16,7 @@ rule samtools_view:
     output:
         "data/{sample}.bam"
     shell:
-        "samtools view -bS {input} > {output}"
+        "samtools view -@12 -bS {input} > {output}"
 
 rule samtools_sort:
     input:
@@ -24,7 +24,7 @@ rule samtools_sort:
     output:
         "data/{sample}.sorted.bam"
     shell:
-        "santools sort {input} -o {output}"
+        "santools sort -@ 12 {input} -o {output}"
 
 rule samtools_index:
     input:
@@ -45,9 +45,6 @@ rule HLA_selection:
 
 #export HDF5_USE_FILE_LOCKING='FALSE'
 
-
-# HLA INDEXING???
-
 #run pepper margin
 
 rule pepper:
@@ -55,43 +52,62 @@ rule pepper:
         bam="data/{sample}_HLA.bam" ,
         ref="data/chr6.fa"
     output:
-        "output/{sample}_PEPPER_SNP_OUTPUT.vcf.gz"
+        "output/logs/{sample}_pepper_snp.log"
     shell:
-        "singularity exec /apps/PEPPER/0.4/pepper pepper_snp  call_variant -b  {input.bam} -f  {input.ref} -t 4 -m ../../../../../scratch/production/DAT/apps/PEPPER_MARGIN_DEEPVARIANT/0.4/pepper_models/PEPPER_SNP_R941_ONT_V4.pkl -o {output} -r chr6 -s Sample -w 4 -bs 64 --ont 2>&1|tee output//logs/1_pepper_snp.log"
+        "singularity exec /apps/PEPPER/0.4/pepper pepper_snp  call_variant -b  {input.bam} -f  {input.ref} -t 4 -m ../../../../../scratch/production/DAT/apps/PEPPER_MARGIN_DEEPVARIANT/0.4/pepper_models/PEPPER_SNP_R941_ONT_V4.pkl -o output/pepper_snp -r chr6 -s Sample -w 4 -bs 64 --ont 2>&1|tee {output}"
+
+rule gzip:
+    input:
+        "output/logs/{sample}_pepper_snp.log",
+    output:
+        "output/pepper_snp/{sample}_log_gzip.txt"
+    shell:
+        "gzip output/pepper_snp/PEPPER_SNP_OUTPUT.vcf|tee {output}"
+
+rule mv:
+    input:
+        "output/pepper_snp/{sample}_log_gzip.txt"
+    output:
+        "output/pepper_snp/{sample}_PEPPER_SNP_OUTPUT.vcf.gz"
+    shell:
+        "mv output/pepper_snp/PEPPER_SNP_OUTPUT.vcf.gz {output}"
 
 rule tabix:
     input:
-        "output/{sample}_PEPPER_SNP_OUTPUT.vcf.gz"
+        "output/pepper_snp/{sample}_PEPPER_SNP_OUTPUT.vcf.gz"
     output:
-        "output/{sample}_PEPPER_SNP_OUTPUT.vcf.gz.tbi"
+        "output/pepper_snp/{sample}_PEPPER_SNP_OUTPUT.vcf.gz.tbi"
     shell:
         "tabix -p vcf {input}"
 
 rule margin:
     input:
         bam="data/{sample}_HLA.bam",
-        vcf="output/{sample}_PEPPER_SNP_OUTPUT.vcf.gz",
-        vcfi="output/{sample}_PEPPER_SNP_OUTPUT.vcf.gz.tbi",
+        vcf="output/pepper_snp/{sample}_PEPPER_SNP_OUTPUT.vcf.gz",
+        vcfi="output/pepper_snp/{sample}_PEPPER_SNP_OUTPUT.vcf.gz.tbi",
         ref="data/chr6.fa"
     output:
-        "output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam"
+        "output/logs/{sample}_margin_haplotag.log"
     shell:
-        "time margin phase {input.bam}  {input.ref}  {input.vcf} ../../../../../apps/MARGIN/2.2.2/params/misc/allParams.ont_haplotag.json -t 4 -r chr6 -V -o {output} 2>&1 | tee output/logs/2_margin_haplotag.log"
+        "time margin phase {input.bam}  {input.ref}  {input.vcf} ../../../../../apps/MARGIN/2.2.2/params/misc/allParams.ont_haplotag.json -t 4 -r chr6 -V -o output/MARGIN_PHASED.PEPPER_SNP_MARGIN 2>&1 | tee {output}"
+
 
 rule samtools_index2:
     input:
-        "output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam"
+        "output/logs/{sample}_margin_haplotag.log"
     output:
-        "output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai"
+        "output/logs/{sample}_index2.log"
     shell:
-        "samtools index {input}"
+        "samtools index output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam| tee {output}"
+
 
 #division into HLA-genes
 
 rule select_A:
     input:
-        bam="output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam",
-        bai="output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai"
+        bam="output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam",
+        bai="output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai",
+        lo="output/logs/{sample}_index2.log"
     output:
         "output/{sample}_HLA_A.bam"
     shell:
@@ -99,8 +115,9 @@ rule select_A:
 
 rule select_B:
     input:
-        bam="output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam",
-        bai="output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai"
+        bam="output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam",
+        bai="output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai",
+        lo="output/logs/{sample}_index2.log"
     output:
         "output/{sample}_HLA_B.bam"
     shell:
@@ -108,8 +125,9 @@ rule select_B:
 
 rule select_C:
     input:
-        bam="output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam",
-        bai="output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai"
+        bam="output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam",
+        bai="output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai",
+        lo="output/logs/{sample}_index2.log"
     output:
         "output/{sample}_HLA_C.bam"
     shell:
@@ -117,8 +135,9 @@ rule select_C:
 
 rule select_DPA1:
     input:
-        bam="output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam",
-        bai="output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai"
+        bam="output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam",
+        bai="output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai",
+        lo="output/logs/{sample}_index2.log"
     output:
         "output/{sample}_HLA_DPA1.bam"
     shell:
@@ -126,8 +145,9 @@ rule select_DPA1:
 
 rule select_DPB1:
     input:
-        bam="output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam",
-        bai="output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai"
+        bam="output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam",
+        bai="output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai",
+        lo="output/logs/{sample}_index2.log"
     output:
         "output/{sample}_HLA_DPB1.bam"
     shell:
@@ -135,8 +155,9 @@ rule select_DPB1:
 
 rule select_DQA1:
     input:
-        bam="output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam",
-        bai="output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai"
+        bam="output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam",
+        bai="output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai",
+        lo="output/logs/{sample}_index2.log"
     output:
         "output/{sample}_HLA_DQA1.bam"
     shell:
@@ -144,8 +165,9 @@ rule select_DQA1:
 
 rule select_DQB1:
     input:
-        bam="output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam",
-        bai="output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai"
+        bam="output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam",
+        bai="output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai",
+        lo="output/logs/{sample}_index2.log"
     output:
         "output/{sample}_HLA_DQB1.bam"
     shell:
@@ -153,8 +175,9 @@ rule select_DQB1:
 
 rule select_DRB1:
     input:
-        bam="output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam",
-        bai="output/{sample}_MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai"
+        bam="output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam",
+        bai="output/MARGIN_PHASED.PEPPER_SNP_MARGIN.haplotagged.bam.bai",
+        lo="output/logs/{sample}_index2.log"
     output:
         "output/{sample}_HLA_DRB1.bam"
     shell:
@@ -372,6 +395,8 @@ rule flye_A_1:
         "output/{sample}_HLA_A_1.fa"
     output:
         "output/flyeA_1/{sample}_HLA_A_1_contig.fasta"
+    conda:
+        "envs/environment.yaml"
     shell:
         "flye --nano-raw {input} --out-dir output/flye_A_1/ --threads 4 -m 1000 -i 2"
 
