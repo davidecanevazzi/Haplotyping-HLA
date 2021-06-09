@@ -1,5 +1,12 @@
+#how it works:
+#module load samtools minimap2 PEPPER DEEPVARIANT MARGIN bamtools tabix
+#module load gcc/6.3.0 mkl/11.3.3 PYTHON/3.6.0 GLIBC/2.19 CONDA/4.5.11_PYTHON3
+#source activate /home/devel/talioto/miniconda3/envs/flye-v2.8.3/
+
 
 #mapping and indexing
+
+
 
 rule minimap:
     input:
@@ -394,128 +401,126 @@ rule flye_A_1:
     input:
         "output/{sample}_HLA_A_1.fa"
     output:
-        "output/flyeA_1/{sample}_HLA_A_1_contig.fasta"
-    conda:
-        "envs/environment.yaml"
+        "output/flye_A_1/{sample}_assembly.log"
     shell:
-        "flye --nano-raw {input} --out-dir output/flye_A_1/ --threads 4 -m 1000 -i 2"
+        "flye --nano-raw {input} --out-dir output/flye_A_1/ --threads 4 -m 1000 -i 2|tee {output}"
 
 rule flye_A_2:
     input:
         "output/{sample}_HLA_A_2.fa"
     output:
-        "output/flye_A_2/{sample}_HLA_A_2_contig.fasta"
+        "output/flye_A_2/{sample}_assembly.log"
     shell:
-        "flye --nano-raw {input} --out-dir output/flye_A_2/ --threads 4 -m 1000 -i 2"
+        "flye --nano-raw {input} --out-dir output/flye_A_2/ --threads 4 -m 1000 -i 2|tee {output}"
 
 rule flye_B_1:
     input:
         "output/{sample}_HLA_B_1.fa"
     output:
-        "output/flye_B_1/{sample}_HLA_B_1_contig.fasta"
+        "output/flye_B_1/{sample}_assembly.log"
     shell:
-        "flye --nano-raw {input} --out-dir output/flye_B_1/ --threads 4 -m 1000 -i 2"
+        "flye --nano-raw {input} --out-dir output/flye_B_1/ --threads 4 -m 1000 -i 2|tee {output}"
 
 rule flye_B_2:
     input:
         "output/{sample}_HLA_B_2.fa"
     output:
-        "output/flye_B_2/{sample}_HLA_B_2_contig.fasta"
+        "output/flye_B_2/{sample}_assembly.log"
     shell:
-        "flye --nano-raw {input} --out-dir output/flye_B_2/ --threads 4 -m 1000 -i 2"
+        "flye --nano-raw {input} --out-dir output/flye_B_2/ --threads 4 -m 1000 -i 2|tee {output}"
 
 rule flye_C_1:
     input:
         "output/{sample}_HLA_C_1.fa"
     output:
-        "output/flye_C_1/{sample}_HLA_C_1_contig.fasta"
+        "output/flye_C_1/{sample}_assembly.log"
     shell:
-        "flye --nano-raw {input} --out-dir output/flye_C_1/ --threads 4 -m 1000 -i 2"
+        "flye --nano-raw {input} --out-dir output/flye_C_1/ --threads 4 -m 1000 -i 2|tee {output}"
 
 rule flye_C_2:
     input:
         "output/{sample}_HLA_C_2.fa"
     output:
-        "output/flye_C_2/{sample}_HLA_C_2_contig.fasta"
+        "output/flye_C_2/{sample}_assembly.log"
     shell:
-        "flye --nano-raw {input} --out-dir output/flye_C_2/ --threads 4 -m 1000 -i 2"
+        "flye --nano-raw {input} --out-dir output/flye_C_2/ --threads 4 -m 1000 -i 2|tee {output}"
 
 rule flye_DPA_1:
     input:
         "output/{sample}_HLA_DPA1_1.fa"
     output:
-        "output/flye_DPA1_1/{sample}_HLA_DPA1_1_contig.fasta"
+        "output/flye_DPA1_1/{sample}_assembly.log"
     shell:
-        "flye --nano-raw {input} --out-dir output/flye_DPA1_1/ --threads 4 -m 1000 -i 2"
+        "flye --nano-raw {input} --out-dir output/flye_DPA1_1/ --threads 4 -m 1000 -i 2|tee {output}"
 
 rule flye_DPA1_2:
     input:
         "output/{sample}_HLA_DPA1_2.fa"
     output:
-        "output/flye_DPA1_2/{sample}_HLA_DPA1_2_contig.fasta"
+        "output/flye_DPA1_2/{sample}_assembly.log"
     shell:
-        "flye --nano-raw {input} --out-dir output/flye_DPA1_2/ --threads 4 -m 1000 -i 2"
+        "flye --nano-raw {input} --out-dir output/flye_DPA1_2/ --threads 4 -m 1000 -i 2|tee {output}"
 
 rule flye_DPB1_1:
     input:
         "output/{sample}_HLA_DPB1_1.fa"
     output:
-        "output/flye_DPB1_1/{sample}_HLA_DPB1_1_contig.fasta"
+        "output/flye_DPB1_1/{sample}_assembly.log"
     shell:
-        "flye --nano-raw {input} --out-dir output/flye_DPB1_1/ --threads 4 -m 1000 -i 2"
+        "flye --nano-raw {input} --out-dir output/flye_DPB1_1/ --threads 4 -m 1000 -i 2|tee {output}"
 
 rule flye_DPB1_2:
     input:
         "output/{sample}_HLA_DPB1_2.fa"
     output:
-        "output/flye_DPB1_2/{sample}_HLA_DPB1_2_contig.fasta"
+        "output/flye_DPB1_2/{sample}_assembly.log"
     shell:
-        "flye --nano-raw {input} --out-dir output/flye_DPB1_2/ --threads 4 -m 1000 -i 2"
+        "flye --nano-raw {input} --out-dir output/flye_DPB1_2/ --threads 4 -m 1000 -i 2|tee {output}"
 
 rule flye_DQA1_1:
     input:
         "output/{sample}_HLA_DQA1_1.fa"
     output:
-        "output/flye_DQA1_1/{sample}_HLA_DQA1_1_contig.fasta"
+        "output/flye_DQA1_1/{sample}_assembly.log"
     shell:
-        "flye --nano-raw {input} --out-dir output/flye_DQA1_1/ --threads 4 -m 1000 -i 2"
+        "flye --nano-raw {input} --out-dir output/flye_DQA1_1/ --threads 4 -m 1000 -i 2|tee {output}"
 
 rule flye_DQA1_2:
     input:
         "output/{sample}_HLA_DQA1_2.fa"
     output:
-        "output/flye_DQA1_2/{sample}_HLA_DQA1_2_contig.fasta"
+        "output/flye_DQA1_2/{sample}_assembly.log"
     shell:
-        "flye --nano-raw {input} --out-dir output/flye_DQA1_2/ --threads 4 -m 1000 -i 2"
+        "flye --nano-raw {input} --out-dir output/flye_DQA1_2/ --threads 4 -m 1000 -i 2|tee {output}"
 
 rule flye_DQB1_1:
     input:
         "output/{sample}_HLA_DQB1_1.fa"
     output:
-        "output/flye_DQB1_1/{sample}_HLA_DQB1_1_contig.fasta"
+        "output/flye_DQB1_1/{sample}_assembly.log"
     shell:
-        "flye --nano-raw {input} --out-dir output/flye_DQB1_1/ --threads 4 -m 1000 -i 2"
+        "flye --nano-raw {input} --out-dir output/flye_DQB1_1/ --threads 4 -m 1000 -i 2|tee {output}"
 
 rule flye_DQB1_2:
     input:
         "output/{sample}_HLA_DQB1_2.fa"
     output:
-        "output/flye_DQB1_2/{sample}_HLA_DQB1_2_contig.fasta"
+        "output/flye_DQB1_2/{sample}_assembly.log"
     shell:
-        "flye --nano-raw {input} --out-dir output/flye_DQB1_2/ --threads 4 -m 1000 -i 2"
+        "flye --nano-raw {input} --out-dir output/flye_DQB1_2/ --threads 4 -m 1000 -i 2|tee {output}"
 
 rule flye_DRB1_1:
     input:
         "output/{sample}_HLA_DRB1_1.fa"
     output:
-        "output/flye_DRB1_1/{sample}_HLA_DRB1_1_contig.fasta"
+        "output/flye_DRB1_1/{sample}_assembly.log"
     shell:
-        "flye --nano-raw {input} --out-dir output/flye_DRB1_1/ --threads 4 -m 1000 -i 2"
+        "flye --nano-raw {input} --out-dir output/flye_DRB1_1/ --threads 4 -m 1000 -i 2|tee {output}"
 
 rule flye_DRB1_2:
     input:
         "output/{sample}_HLA_DRB1_2.fa"
     output:
-        "output/flye_DRB1_2/{sample}_HLA_DRB1_2_contig.fasta"
+        "output/flye_DRB1_2/{sample}_assembly.log"
     shell:
-        "flye --nano-raw {input} --out-dir output/flye_DRB1_2/ --threads 4 -m 1000 -i 2"
+        "flye --nano-raw {input} --out-dir output/flye_DRB1_2/ --threads 4 -m 1000 -i 2|tee {output}"
